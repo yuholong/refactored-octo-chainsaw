@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app",
+    "up": "sequelize db:migrate",
+    "down": "sequelize db:migrate:undo",
     "test": "mocha",
     "dbinit": "sequelize init"
   },
