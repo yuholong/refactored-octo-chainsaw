@@ -1,6 +1,9 @@
+const _ = require('lodash');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 const Customer = require('../models')['Customer'];
 const isInt = require('../util').isInt;
-const _ = require('lodash');
 
 const validSpecies = ['cat', 'dog', 'rabbit'];
 const validBreed = ['labrador', 'poodle', 'spaniel', 'terrier'];
@@ -40,7 +43,7 @@ function validateParams(params) {
         max: pref.age.max,
         min: pref.age.min
       },
-      spcies: pref.species,
+      species: pref.species,
       breed: pref.breed
     })
   };
@@ -53,6 +56,19 @@ module.exports = {
   getOne: function(id) {
     if (isInt(id)) return Customer.findById(id);
     else return Promise.resolve(null);
+  },
+  getAll: function() {
+    return Customer.findAll({});
+  },
+  getSome: function(ids) {
+    if (ids.length === 0) return Promise.resolve(null);
+    return Customer.findAll({
+      where: {
+        id: {
+          [Op.or]: ids
+        }
+      }
+    });
   },
   create: function(params) {
     params = validateParams(params);
