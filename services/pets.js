@@ -34,11 +34,11 @@ function validateParams(params) {
 module.exports = {
   getOne: function(id) {
     if (isInt(id)) return Pet.findById(id);
-    else return null;
+    else return Promise.resolve(null);
   },
   create: function(params) {
     params = validateParams(params);
     if (params !== false) return Pet.create(params);
-    else return null;
+    else return Promise.resolve(null);
   }
 };
