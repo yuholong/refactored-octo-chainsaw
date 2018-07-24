@@ -6,6 +6,7 @@ const petsService = require('../services').pets;
 const matchesService = require('../services').matches;
 const isInt = require('../util').isInt;
 const Error = require('../util').Error;
+const formatter = require('../util').formatter;
 
 /**
  * Add a new customer to the system
@@ -15,7 +16,7 @@ router.post('/', function(req, res, next) {
     id = params.id;
   if ('id' in params) {
     if (!isInt(id)) {
-      res.send('invalid ID');
+      return next(Error.invalidParams('Invalid ID.'));
     } else {
       return customersService.getOne(id).then(customer => {
         if (customer === null) {
@@ -23,11 +24,11 @@ router.post('/', function(req, res, next) {
             if (customer === null) {
               return next(Error.invalidParams('Invalid Parameters.'));
             }
-            res.send(customer);
+            res.send(formatter(customer));
             return matchesService.addMatchingPets(customer);
           });
         } else {
-          next(Error.invalidParams('Customer ID in use.'));
+          return next(Error.invalidParams('Customer ID in use.'));
         }
       });
     }
@@ -38,11 +39,11 @@ router.post('/', function(req, res, next) {
         if (customer === null) {
           return next(Error.invalidParams('Invalid Parameters.'));
         }
-        res.send(customer);
+        res.send(formatter(customer));
         return matchesService.addMatchingPets(customer);
       })
       .catch(err => {
-        next(Error.invalidParams('Failed to create customer.'));
+        return next(Error.invalidParams('Failed to create customer.'));
       });
   }
 });
@@ -61,7 +62,7 @@ router.get('/:id', function(req, res, next) {
           Error.invalidParams('Customer not found with provided ID.')
         );
       } else {
-        res.send(customer);
+        res.send(formatter(customer));
       }
     });
   }
@@ -77,8 +78,8 @@ router.get('/:id/matches', function(req, res) {
       return pet.PetId;
     });
     return petsService.getSome(petids).then(pets => {
-      if (pets === null) res.send('No Matches');
-      res.send(pets);
+      if (pets === null) res.send(formatter('No Matches'));
+      res.send(formatter(pets));
     });
   });
 });
@@ -86,7 +87,7 @@ router.get('/:id/matches', function(req, res) {
 /**
  * The customer adopts the given pet
  */
-router.post('/:id/adopt', function(req, res) {
+router.post('/:id/adopt', function(req, res, next) {
   let customerId = req.params.id,
     petId = req.query.pet_id;
   return matchesService.isAMatch({ customerId, petId }).then(match => {
@@ -94,11 +95,12 @@ router.post('/:id/adopt', function(req, res) {
       return matchesService.removeMatches({ customerId, petId }).then(() => {
         return customersService.remove(customerId).then(() => {
           return petsService.remove(petId).then(() => {
-            res.send('Adopted.');
+            res.send(formatter('Adopted.'));
           });
         });
       });
-    } else res.send('no match');
+    } else
+      return next(Error.invalidParams('Customer ID and pet ID do not match.'));
   });
 });
 

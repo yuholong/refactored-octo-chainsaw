@@ -10,7 +10,14 @@ var util = {
       !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10))
     );
   },
-  Error: error
+  Error: error,
+  formatter: function(data) {
+    return {
+      statusCode: 200,
+      message: 'OK',
+      data: data
+    };
+  }
 };
 
 module.exports = util;

@@ -4,6 +4,7 @@ const petsService = require('../services').pets;
 const matchesService = require('../services').matches;
 const isInt = require('../util').isInt;
 const Error = require('../util').Error;
+const formatter = require('../util').formatter;
 
 /**
  * Add a new pet to the system
@@ -13,7 +14,7 @@ router.post('/', function(req, res, next) {
     id = params.id;
   if ('id' in params) {
     if (!isInt(id)) {
-      res.send('invalid ID');
+      return next(Error.invalidParams('Invalid ID.'));
     } else {
       return petsService.getOne(id).then(pet => {
         if (pet === null) {
@@ -21,7 +22,7 @@ router.post('/', function(req, res, next) {
             if (pet === null) {
               return next(Error.invalidParams('Invalid Parameters.'));
             }
-            res.send(pet);
+            res.send(formatter(pet));
             return matchesService.addMatchingPets(pet);
           });
         } else {
@@ -36,7 +37,7 @@ router.post('/', function(req, res, next) {
         if (pet === null) {
           return next(Error.invalidParams('Invalid Parameters.'));
         }
-        res.send(pet);
+        res.send(formatter(pet));
         return matchesService.addMatchingCustomers(pet);
       })
       .catch(err => {
@@ -57,7 +58,7 @@ router.get('/:id', function(req, res, next) {
       if (customer === null) {
         return next(Error.invalidParams('Pet not found with provided ID.'));
       } else {
-        res.send(customer);
+        res.send(formatter(customer));
       }
     });
   }
@@ -69,8 +70,8 @@ router.get('/:id', function(req, res, next) {
 router.get('/:id/matches', function(req, res) {
   let petId = req.params.id;
   return matchesService.getMatchingCustomers({ petId }).then(customers => {
-    if (customers === null) res.send('No Matches.');
-    res.send(customers);
+    if (customers === null) res.send(formatter('No Matches.'));
+    res.send(formatter(customers));
   });
 });
 
