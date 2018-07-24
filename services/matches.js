@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const Match = require('../models')['Match'];
 const customersService = require('./customers');
@@ -71,6 +73,18 @@ module.exports = {
       CustomerId = params.customerId;
     return Match.findOne({ where: { PetId, CustomerId } }).then(match => {
       return match !== null;
+    });
+  },
+  removeMatches: function(params) {
+    let PetId = params.PetId,
+      CustomerId = params.customerId;
+    return Match.destroy({
+      where: {
+        [Op.or]: {
+          PetId,
+          CustomerId
+        }
+      }
     });
   }
 };

@@ -61,5 +61,9 @@ module.exports = {
     params = validateParams(params);
     if (params !== false) return Pet.create(params);
     else return Promise.resolve(null);
+  },
+  remove: function(id) {
+    if (isInt(id)) return Pet.destroy({ where: { id } });
+    else return Promise.resolve(null);
   }
 };

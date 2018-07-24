@@ -27,7 +27,7 @@ router.post('/', function(req, res, next) {
             return matchesService.addMatchingPets(customer);
           });
         } else {
-          next(Error.invalidParams('User ID in use.'));
+          next(Error.invalidParams('Customer ID in use.'));
         }
       });
     }
@@ -42,7 +42,7 @@ router.post('/', function(req, res, next) {
         return matchesService.addMatchingPets(customer);
       })
       .catch(err => {
-        next(Error.invalidParams('Failed to create user.'));
+        next(Error.invalidParams('Failed to create customer.'));
       });
   }
 });
@@ -90,8 +90,15 @@ router.post('/:id/adopt', function(req, res) {
   let customerId = req.params.id,
     petId = req.query.pet_id;
   return matchesService.isAMatch({ customerId, petId }).then(match => {
-    if (match) res.send('match');
-    else res.send('no match');
+    if (match) {
+      return matchesService.removeMatches({ customerId, petId }).then(() => {
+        return customersService.remove(customerId).then(() => {
+          return petsService.remove(petId).then(() => {
+            res.send('Adopted.');
+          });
+        });
+      });
+    } else res.send('no match');
   });
 });
 
