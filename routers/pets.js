@@ -25,7 +25,7 @@ router.post('/', function(req, res, next) {
             return matchesService.addMatchingPets(pet);
           });
         } else {
-          next(Error.invalidParams('User ID in use.'));
+          next(Error.invalidParams('Pet ID in use.'));
         }
       });
     }
@@ -55,9 +55,7 @@ router.get('/:id', function(req, res, next) {
   } else {
     petsService.getOne(id).then(customer => {
       if (customer === null) {
-        return next(
-          Error.invalidParams('Customer not found with provided ID.')
-        );
+        return next(Error.invalidParams('Pet not found with provided ID.'));
       } else {
         res.send(customer);
       }
