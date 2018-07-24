@@ -3,6 +3,18 @@
 server: Node.js
 db: PostgreSQL
 
+## Instruction
+
+Install dependencies
+`npm install`
+Run database migrations
+`npm run up`
+Start server
+`npm start`
+
+If need to undo database migrations
+`npm run down`
+
 ## API
 
 ### POST /pets
