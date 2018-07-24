@@ -6,14 +6,28 @@ db: PostgreSQL
 ## Instruction
 
 Install dependencies
-`npm install`
+
+```
+npm install
+```
+
 Run database migrations
-`npm run up`
+
+```
+npm run up
+```
+
 Start server
-`npm start`
+
+```
+npm start
+```
 
 If need to undo database migrations
-`npm run down`
+
+```
+npm run down
+```
 
 ## API
 
