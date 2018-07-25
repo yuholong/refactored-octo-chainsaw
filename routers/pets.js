@@ -1,6 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const _ = require('lodash');
+const router = express.Router();
 const petsService = require('../services').pets;
+const customersService = require('../services').customers;
 const matchesService = require('../services').matches;
 const isInt = require('../util').isInt;
 const Error = require('../util').Error;
@@ -70,8 +72,14 @@ router.get('/:id', function(req, res, next) {
 router.get('/:id/matches', function(req, res) {
   let petId = req.params.id;
   return matchesService.getMatchingCustomers({ petId }).then(customers => {
-    if (customers === null) res.send(formatter('No Matches.'));
-    res.send(formatter(customers));
+    if (customers === null) return res.send(formatter('No Matches.'));
+    let ids = _.map(customers, function(customer) {
+      return customer.CustomerId;
+    });
+    return customersService.getSome(ids).then(customers => {
+      if (customers === null) res.send(formatter('No Matches'));
+      res.send(formatter(customers));
+    });
   });
 });
 
