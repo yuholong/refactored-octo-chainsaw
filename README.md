@@ -27,6 +27,23 @@ module.exports = {
 };
 ```
 
+and also a config/config.json file for migration (this should be fixed and combined to the config.js in the future)
+
+```
+{
+  "development": {
+    "username": "postgres",
+    "password": "password",
+    "database": "database",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "other_env": {
+      ...
+  }
+}
+```
+
 Install dependencies
 
 ```
