@@ -68,6 +68,24 @@ If need to undo database migrations
 npm run down
 ```
 
+## Tests
+
+To do testing, initialize the testing database first.
+
+```
+NODE_ENV=testing npm run up
+```
+
+Please note that running the test will wipe the tables in the database.
+
+When the database is ready, run
+
+```
+NODE_ENV=testing npm test
+```
+
+For now there is an error when running the test for customer service as some error handlings are done during the router layer.
+
 ## API
 
 ### POST /pets
