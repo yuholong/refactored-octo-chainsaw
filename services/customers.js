@@ -9,9 +9,8 @@ const validSpecies = ['cat', 'dog', 'rabbit'];
 const validBreed = ['labrador', 'poodle', 'spaniel', 'terrier'];
 
 function validateParams(params) {
-  var ok = true;
-  if ('id' in params && !isInt(params.id)) ok = false;
-  if (!('preference' in params)) ok = false;
+  if ('id' in params && !isInt(params.id)) return false;
+  if (!('preference' in params)) return false;
   var pref = params.preference;
   //   if (typeof pref === 'string') pref = JSON.parse(params.preference); // catch error
   if (
@@ -20,13 +19,13 @@ function validateParams(params) {
     !('max' in pref.age) ||
     pref.age.min < 0
   )
-    ok = false;
+    return false;
   if (
     !('species' in pref) ||
     pref.species.constructor !== Array ||
     _.difference(pref.species, validSpecies).length != 0
   ) {
-    ok = false;
+    return false;
   } else if (_.indexOf(pref.species, 'dog') == -1) {
     pref['breed'] = [];
   } else if (
@@ -35,7 +34,7 @@ function validateParams(params) {
     pref.breed.length == 0 ||
     _.difference(pref.breed, validBreed).length != 0
   ) {
-    ok = false;
+    return false;
   }
   var ret = {
     preference: JSON.stringify({
@@ -48,8 +47,7 @@ function validateParams(params) {
     })
   };
   if ('id' in params) ret['id'] = params.id;
-  if (ok) return ret;
-  else return false;
+  return ret;
 }
 
 module.exports = {
