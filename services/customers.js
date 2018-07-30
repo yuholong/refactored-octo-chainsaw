@@ -70,7 +70,10 @@ module.exports = {
   },
   create: function(params) {
     params = validateParams(params);
-    if (params !== false) return Customer.create(params);
+    if (params !== false)
+      return Customer.create(params).catch(err => {
+        return Promise.resolve(null);
+      });
     else return Promise.resolve(null);
   },
   remove: function(id) {

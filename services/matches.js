@@ -21,7 +21,7 @@ function _match(pet, customer) {
 module.exports = {
   addMatchingPets: function(customer) {
     let customerId = customer.id;
-    petsService.getAll().then(pets => {
+    return petsService.getAll().then(pets => {
       for (let i = 0; i < pets.length; ++i) {
         if (_match(pets[i], customer)) {
           let petId = pets[i].id;
@@ -76,7 +76,7 @@ module.exports = {
     });
   },
   removeMatches: function(params) {
-    let PetId = params.PetId,
+    let PetId = params.petId,
       CustomerId = params.customerId;
     return Match.destroy({
       where: {
